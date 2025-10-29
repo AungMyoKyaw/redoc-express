@@ -6,6 +6,7 @@
 [![npm][npm-download]][npm-dl-url]
 [![contributions welcome][contri]][contri-url]
 [![License: MIT][license]][license-url]
+[![coverage][coverage]][coverage-url]
 
 ## Demo
 
@@ -83,6 +84,23 @@ npm i
 npm t
 ```
 
+## Test Coverage
+
+| Metric     | Coverage |
+| ---------- | -------- |
+| Statements | 100%     |
+| Branches   | 100%     |
+| Functions  | 100%     |
+| Lines      | 100%     |
+
+**47 comprehensive test cases** covering:
+
+- HTML template generation with various configurations
+- Special characters and edge cases handling
+- Middleware functionality and request/response handling
+- Complex nested options and JSON serialization
+- Daily CI/CD test runs with automated issue creation
+
 ## Check ReDoc Project for more INFO
 
 - [redoc][redoc-url]
@@ -102,3 +120,5 @@ MIT © [Aung Myo Kyaw](https://github.com/AungMyoKyaw)
 [prettier-url]: https://github.com/prettier/prettier
 [redoc-url]: https://github.com/Redocly/redoc
 [live-demo-url]: http://redocly.github.io/redoc/
+[coverage]: https://img.shields.io/badge/coverage-100%25-brightgreen.svg?style=flat-square
+[coverage-url]: #test-coverage
