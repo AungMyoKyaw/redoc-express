@@ -157,6 +157,227 @@ describe('redocHtml', () => {
     expect(result).toContain('margin: 0');
     expect(result).toContain('padding: 0');
   });
+
+  test('should properly escape quotes in options', () => {
+    const result = redocHtml({
+      title: 'API with "quotes"',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        info: { description: 'API with "quotes"' }
+      }
+    });
+
+    expect(result).toContain('API with "quotes"');
+  });
+
+  test('should handle multiple special characters in URL', () => {
+    const specUrl =
+      'http://example.com/api/v1/spec.json?version=2&format=json&filter=test%20space';
+    const result = redocHtml({
+      title: 'API',
+      specUrl
+    });
+
+    expect(result).toContain(specUrl);
+  });
+
+  test('should handle very long title', () => {
+    const longTitle =
+      'This is a very long API documentation title with many characters and special symbols like & < >';
+    const result = redocHtml({
+      title: longTitle,
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    expect(result).toContain(longTitle);
+  });
+
+  test('should handle empty string title', () => {
+    const result = redocHtml({
+      title: '',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    expect(result).toContain('<title></title>');
+  });
+
+  test('should handle very long nonce', () => {
+    const longNonce = 'a'.repeat(256);
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      nonce: longNonce
+    });
+
+    expect(result).toContain(`nonce='${longNonce}'`);
+  });
+
+  test('should handle array values in redocOptions', () => {
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        servers: [
+          { url: 'http://api1.example.com', description: 'Production' },
+          { url: 'http://api2.example.com', description: 'Staging' }
+        ]
+      }
+    });
+
+    expect(result).toContain('api1.example.com');
+    expect(result).toContain('api2.example.com');
+    expect(result).toContain('Production');
+  });
+
+  test('should handle null values in redocOptions', () => {
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        theme: null,
+        title: null
+      }
+    });
+
+    expect(result).toContain('null');
+  });
+
+  test('should handle numeric values in redocOptions', () => {
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        scrollYOffset: 100,
+        fontSize: 14,
+        timeout: 5000
+      }
+    });
+
+    expect(result).toContain('100');
+    expect(result).toContain('14');
+    expect(result).toContain('5000');
+  });
+
+  test('should handle boolean false values in redocOptions', () => {
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        hideDownloadButton: false,
+        tryItOutEnabled: false
+      }
+    });
+
+    expect(result).toContain('false');
+  });
+
+  test('should handle deeply nested objects in redocOptions', () => {
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        theme: {
+          colors: {
+            primary: {
+              main: '#fff',
+              light: '#f0f0f0',
+              dark: '#000'
+            },
+            secondary: {
+              main: '#ccc'
+            }
+          },
+          typography: {
+            fontFamily: 'Arial',
+            fontSize: 12,
+            fontWeight: 400
+          }
+        }
+      }
+    });
+
+    expect(result).toContain('#fff');
+    expect(result).toContain('#f0f0f0');
+    expect(result).toContain('#000');
+    expect(result).toContain('Arial');
+    expect(result).toContain('fontWeight');
+  });
+
+  test('should maintain HTML structure integrity', () => {
+    const result = redocHtml({
+      title: 'Test',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    expect(result).toMatch(/<html>[\s\S]*<\/html>/);
+    expect(result).toMatch(/<head>[\s\S]*<\/head>/);
+    expect(result).toMatch(/<body>[\s\S]*<\/body>/);
+    expect(result).toMatch(/<title>[\s\S]*<\/title>/);
+  });
+
+  test('should have correct script tag attributes', () => {
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      nonce: 'test-nonce'
+    });
+
+    expect(result).toMatch(
+      /script nonce='test-nonce' src="https:\/\/unpkg\.com\/redoc@\^2\.5\.2\/bundles\/redoc\.standalone\.js"/
+    );
+  });
+
+  test('should have Redoc.init call with correct parameters', () => {
+    const specUrl = 'http://example.com/spec.json';
+    const result = redocHtml({
+      title: 'API',
+      specUrl,
+      redocOptions: { hideDownloadButton: true }
+    });
+
+    expect(result).toContain(`Redoc.init(`);
+    expect(result).toContain(`"${specUrl}"`);
+    expect(result).toContain(`hideDownloadButton`);
+    expect(result).toContain(`document.getElementById("redoc-container")`);
+  });
+
+  test('should handle URL with special query parameters', () => {
+    const specUrl =
+      'http://example.com/swagger.json?token=abc123&version=2.0&test=true';
+    const result = redocHtml({
+      title: 'API',
+      specUrl
+    });
+
+    expect(result).toContain(specUrl);
+  });
+
+  test('should handle title with HTML-like content', () => {
+    const title = 'API <v1.0>';
+    const result = redocHtml({
+      title,
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    expect(result).toContain(title);
+  });
+
+  test('should generate valid JSON in redocOptions', () => {
+    const result = redocHtml({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        theme: { colors: { primary: { main: '#fff' } } },
+        hideDownloadButton: true
+      }
+    });
+
+    // Verify the options are properly JSON stringified
+    expect(result).toContain('"theme"');
+    expect(result).toContain('"hideDownloadButton"');
+    expect(result).toContain('true');
+    expect(result).toContain('#fff');
+  });
 });
 
 describe('redocExpressMiddleware', () => {
@@ -307,5 +528,231 @@ describe('redocExpressMiddleware', () => {
     expect(sentHtml).toContain('Partial Config API');
     expect(sentHtml).toContain('http://example.com/api.json');
     expect(sentHtml).toContain("nonce=''");
+  });
+
+  test('should call type and send methods in correct order', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'Test',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    const callOrder: string[] = [];
+    const mockRes: any = {
+      type: jest.fn((): any => {
+        callOrder.push('type');
+        return mockRes;
+      }),
+      send: jest.fn(() => {
+        callOrder.push('send');
+      })
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes);
+
+    expect(callOrder).toEqual(['type', 'send']);
+  });
+
+  test('should not modify request object', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'Test',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    const mockReq = { url: '/docs', method: 'GET' };
+    const mockRes = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+
+    middleware(mockReq, mockRes);
+
+    expect(mockReq).toEqual({ url: '/docs', method: 'GET' });
+  });
+
+  test('should handle middleware with empty options object', () => {
+    const middleware = redocExpressMiddleware({} as any);
+
+    const mockRes = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes);
+
+    expect(mockRes.send).toHaveBeenCalled();
+  });
+
+  test('should work with multiple invocations', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    const mockRes1 = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+    const mockRes2 = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes1);
+    middleware(mockReq, mockRes2);
+
+    expect(mockRes1.type).toHaveBeenCalledWith('html');
+    expect(mockRes2.type).toHaveBeenCalledWith('html');
+    expect(mockRes1.send).toHaveBeenCalled();
+    expect(mockRes2.send).toHaveBeenCalled();
+  });
+
+  test('should handle response with chaining methods', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    const mockRes: any = {
+      type: jest.fn(function (this: any) {
+        return this;
+      }),
+      status: jest.fn(function (this: any) {
+        return this;
+      }),
+      send: jest.fn()
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes);
+
+    expect(mockRes.type).toHaveBeenCalledWith('html');
+    expect(mockRes.send).toHaveBeenCalled();
+  });
+
+  test('should send HTML string not buffer', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    const mockRes = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes);
+
+    const sentData = mockRes.send.mock.calls[0][0];
+    expect(typeof sentData).toBe('string');
+  });
+
+  test('should handle nonce with special characters in middleware', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json',
+      nonce: 'nonce-with-dashes_and_underscores.123'
+    });
+
+    const mockRes = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes);
+
+    const sentHtml = mockRes.send.mock.calls[0][0];
+    expect(sentHtml).toContain("nonce='nonce-with-dashes_and_underscores.123'");
+  });
+
+  test('should handle complex redocOptions configuration in middleware', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'Complex API',
+      specUrl: 'http://example.com/spec.json',
+      redocOptions: {
+        theme: {
+          colors: {
+            primary: { main: '#1976d2' },
+            secondary: { main: '#dc3545' }
+          },
+          typography: {
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: 14,
+            fontWeight: 400
+          }
+        },
+        hideDownloadButton: true,
+        scrollYOffset: 80,
+        pathInMiddlePanel: false,
+        tryItOutEnabled: true,
+        requiredPropsFirst: true,
+        onlyRequiredInSamples: true,
+        expandSingleSchemaField: true,
+        expandDefaultServerVariables: true,
+        disableSearch: false,
+        nativeScrollbars: true,
+        simpleOneOfModel: false,
+        sortEnumValuesAlphabetically: false,
+        sortOperationsAlphabetically: false,
+        sortTagsAlphabetically: false
+      }
+    });
+
+    const mockRes = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes);
+
+    const sentHtml = mockRes.send.mock.calls[0][0];
+    expect(sentHtml).toContain('hideDownloadButton');
+    expect(sentHtml).toContain('1976d2');
+    expect(sentHtml).toContain('dc3545');
+    expect(sentHtml).toContain('80');
+    expect(sentHtml).toContain('Roboto');
+  });
+
+  test('should properly handle middleware called with undefined request body', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    const mockRes = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+
+    expect(() => {
+      middleware(undefined, mockRes);
+    }).not.toThrow();
+  });
+
+  test('should return valid HTML that can be parsed', () => {
+    const middleware = redocExpressMiddleware({
+      title: 'API',
+      specUrl: 'http://example.com/spec.json'
+    });
+
+    const mockRes = {
+      type: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+    const mockReq = {};
+
+    middleware(mockReq, mockRes);
+
+    const sentHtml = mockRes.send.mock.calls[0][0];
+
+    // Basic HTML structure validation
+    expect(sentHtml).toMatch(/^<!DOCTYPE html>/);
+    expect(sentHtml).toMatch(/<html[\s>]/);
+    expect(sentHtml).toMatch(/<\/html>$/);
   });
 });
