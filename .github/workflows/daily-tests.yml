@@ -1,0 +1,72 @@
+name: Daily Tests
+
+on:
+  schedule:
+    # Runs at 2 AM UTC daily (adjust to your preference)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [latest]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test -- --coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+
+      - name: Create issue on test failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const now = new Date().toISOString().split('T')[0];
+            const title = `🔴 Daily Test Failed on ${now}`;
+            const body = `Daily test run failed on Node.js ${{ matrix.node-version }}\n\n**Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n**Node.js Version**: ${{ matrix.node-version }}\n**Branch**: ${{ github.ref_name }}\n\nPlease investigate and fix the failing tests.`;
+            
+            // Check if an open issue already exists for today
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['daily-test-failure']
+            });
+            
+            const todayIssue = issues.data.find(issue => issue.title.includes(now));
+            
+            if (!todayIssue) {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['daily-test-failure', 'automated']
+              });
+              
+              // Auto-assign to AungMyoKyaw
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.data.number,
+                assignees: ['AungMyoKyaw']
+              });
+            }
