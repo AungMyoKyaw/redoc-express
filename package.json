@@ -1,14 +1,14 @@
 {
   "name": "redoc-express",
   "version": "2.1.2",
-  "description": "Express Middleware for OpenAPI/Swagger-generated API Reference Documentation",
+  "description": "Lightweight Express middleware for serving interactive ReDoc API documentation from OpenAPI/Swagger specs. TypeScript support, 100% test coverage, ES5 compatible.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "format": "prettier --write \"**/*.ts\"",
-    "lint": "eslint \"**/*.ts\"",
-    "lint:fix": "eslint \"**/*.ts\" --fix",
-    "test": "jest",
+    "lint": "NODE_OPTIONS=--no-warnings=MODULE_TYPELESS_PACKAGE_JSON eslint \"**/*.ts\"",
+    "lint:fix": "NODE_OPTIONS=--no-warnings=MODULE_TYPELESS_PACKAGE_JSON eslint \"**/*.ts\" --fix",
+    "test": "NODE_OPTIONS=--no-warnings=ExperimentalWarning jest",
     "build": "tsc",
     "prepublishonly": "npm run lint && npm run test && npm run build"
   },
@@ -20,25 +20,42 @@
     "url": "git+https://github.com/AungMyoKyaw/redoc-express.git"
   },
   "keywords": [
-    "redoc-swagger-ui-express-middleware"
+    "redoc",
+    "express",
+    "middleware",
+    "openapi",
+    "swagger",
+    "api-documentation",
+    "api-docs",
+    "documentation",
+    "rest-api",
+    "typescript",
+    "nodejs",
+    "redoc-express",
+    "swagger-ui",
+    "openapi-documentation",
+    "api-reference"
   ],
   "author": "Aung Myo Kyaw",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/AungMyoKyaw/redoc-express/issues"
   },
-  "homepage": "https://github.com/AungMyoKyaw/redoc-express#readme",
+  "homepage": "https://aungmyokyaw.github.io/redoc-express/",
   "devDependencies": {
-    "@types/jest": "^29.5.1",
-    "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.2",
-    "@typescript-eslint/parser": "^5.59.2",
-    "eslint": "^8.39.0",
-    "eslint-config-airbnb-base": "^15.0.0",
+    "@types/express": "^5.0.5",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.9.2",
+    "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "eslint": "^9.38.0",
     "eslint-plugin-import": "^2.18.2",
-    "jest": "^29.5.0",
-    "prettier": "^2.8.8",
-    "ts-jest": "^29.1.0",
+    "express": "^5.1.0",
+    "jest": "^30.2.0",
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.0.4"
   }
 }

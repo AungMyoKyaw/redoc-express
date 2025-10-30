@@ -1,5 +1,7 @@
-import { redocHtml } from '../src/redoc-html-template';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Response } from 'express';
 import redocExpressMiddleware from '../src/index';
+import { redocHtml, Ioption } from '../src/redoc-html-template';
 
 describe('redocHtml', () => {
   test('should return redocHtml Template with default options', () => {
@@ -39,7 +41,8 @@ describe('redocHtml', () => {
             }
           },
           typography: {
-            fontFamily: `"museo-sans", 'Helvetica Neue', Helvetica, Arial, sans-serif`
+            fontFamily:
+              '"museo-sans", \'Helvetica Neue\', Helvetica, Arial, sans-serif'
           }
         }
       }
@@ -335,10 +338,10 @@ describe('redocHtml', () => {
       redocOptions: { hideDownloadButton: true }
     });
 
-    expect(result).toContain(`Redoc.init(`);
+    expect(result).toContain('Redoc.init(');
     expect(result).toContain(`"${specUrl}"`);
-    expect(result).toContain(`hideDownloadButton`);
-    expect(result).toContain(`document.getElementById("redoc-container")`);
+    expect(result).toContain('hideDownloadButton');
+    expect(result).toContain('document.getElementById("redoc-container")');
   });
 
   test('should handle URL with special query parameters', () => {
@@ -398,7 +401,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     expect(mockRes.type).toHaveBeenCalledWith('html');
   });
@@ -415,7 +418,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     expect(mockRes.send).toHaveBeenCalled();
     const sentHtml = mockRes.send.mock.calls[0][0];
@@ -432,7 +435,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     expect(mockRes.type).toHaveBeenCalledWith('html');
     expect(mockRes.send).toHaveBeenCalled();
@@ -455,7 +458,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     const sentHtml = mockRes.send.mock.calls[0][0];
     expect(sentHtml).toContain('My Custom API');
@@ -479,7 +482,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     const sentHtml = mockRes.send.mock.calls[0][0];
     expect(sentHtml).toContain('hideDownloadButton');
@@ -503,7 +506,7 @@ describe('redocExpressMiddleware', () => {
     };
 
     expect(() => {
-      middleware(mockReq, mockRes);
+      middleware(mockReq as any, mockRes as any);
     }).not.toThrow();
 
     expect(mockRes.type).toHaveBeenCalled();
@@ -522,7 +525,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     const sentHtml = mockRes.send.mock.calls[0][0];
     expect(sentHtml).toContain('Partial Config API');
@@ -537,18 +540,18 @@ describe('redocExpressMiddleware', () => {
     });
 
     const callOrder: string[] = [];
-    const mockRes: any = {
-      type: jest.fn((): any => {
+    const mockRes = {
+      type: jest.fn(function (this: typeof mockRes) {
         callOrder.push('type');
-        return mockRes;
+        return this;
       }),
       send: jest.fn(() => {
         callOrder.push('send');
       })
-    };
+    } as unknown as Response;
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     expect(callOrder).toEqual(['type', 'send']);
   });
@@ -565,13 +568,13 @@ describe('redocExpressMiddleware', () => {
       send: jest.fn()
     };
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     expect(mockReq).toEqual({ url: '/docs', method: 'GET' });
   });
 
   test('should handle middleware with empty options object', () => {
-    const middleware = redocExpressMiddleware({} as any);
+    const middleware = redocExpressMiddleware({} as Ioption);
 
     const mockRes = {
       type: jest.fn().mockReturnThis(),
@@ -579,7 +582,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     expect(mockRes.send).toHaveBeenCalled();
   });
@@ -600,8 +603,8 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes1);
-    middleware(mockReq, mockRes2);
+    middleware(mockReq as any, mockRes1 as any);
+    middleware(mockReq as any, mockRes2 as any);
 
     expect(mockRes1.type).toHaveBeenCalledWith('html');
     expect(mockRes2.type).toHaveBeenCalledWith('html');
@@ -615,18 +618,18 @@ describe('redocExpressMiddleware', () => {
       specUrl: 'http://example.com/spec.json'
     });
 
-    const mockRes: any = {
-      type: jest.fn(function (this: any) {
+    const mockRes = {
+      type: jest.fn(function (this: typeof mockRes) {
         return this;
       }),
-      status: jest.fn(function (this: any) {
+      status: jest.fn(function (this: typeof mockRes) {
         return this;
       }),
       send: jest.fn()
-    };
+    } as unknown as Response;
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     expect(mockRes.type).toHaveBeenCalledWith('html');
     expect(mockRes.send).toHaveBeenCalled();
@@ -644,7 +647,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     const sentData = mockRes.send.mock.calls[0][0];
     expect(typeof sentData).toBe('string');
@@ -663,7 +666,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     const sentHtml = mockRes.send.mock.calls[0][0];
     expect(sentHtml).toContain("nonce='nonce-with-dashes_and_underscores.123'");
@@ -708,7 +711,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     const sentHtml = mockRes.send.mock.calls[0][0];
     expect(sentHtml).toContain('hideDownloadButton');
@@ -730,7 +733,7 @@ describe('redocExpressMiddleware', () => {
     };
 
     expect(() => {
-      middleware(undefined, mockRes);
+      middleware(undefined as any, mockRes as any);
     }).not.toThrow();
   });
 
@@ -746,7 +749,7 @@ describe('redocExpressMiddleware', () => {
     };
     const mockReq = {};
 
-    middleware(mockReq, mockRes);
+    middleware(mockReq as any, mockRes as any);
 
     const sentHtml = mockRes.send.mock.calls[0][0];
 

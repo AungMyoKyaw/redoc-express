@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { redocHtml, Ioption } from './redoc-html-template';
 
 function redocExpressMiddleware(
@@ -5,8 +6,8 @@ function redocExpressMiddleware(
     title: 'ReDoc',
     specUrl: 'http://petstore.swagger.io/v2/swagger.json'
   }
-): any {
-  return function middleware(req: any, res: any): void {
+): (req: Request, res: Response) => void {
+  return function middleware(_req: Request, res: Response): void {
     res.type('html');
     res.send(redocHtml(options));
   };
