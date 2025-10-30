@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="redoc-express: Beautiful API documentation for Express">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#f0fdf9;stop-opacity:1" />
@@ -12,9 +13,9 @@
       <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
       <feOffset dx="0" dy="4" result="offsetblur"/>
       <feFlood flood-color="#000000" flood-opacity="0.08"/>
-      <feComposite in2="offsetblur" operator="in"/>
+      <feComposite in2="offsetblur" operator="in" result="offsetblur"/>
       <feMerge>
-        <feMergeNode/>
+        <feMergeNode in="offsetblur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
@@ -34,11 +35,11 @@
     <!-- Logo -->
     <g transform="translate(-40, 0)" filter="url(#shadow)">
       <rect x="0" y="0" width="76" height="76" rx="18" fill="url(#logoGrad)"/>
-      <text x="38" y="48" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle">R</text>
+      <text x="38" y="48" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle" role="img">R</text>
     </g>
 
     <!-- Title -->
-    <text x="0" y="52" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#0f4b3c" text-anchor="middle" letter-spacing="-0.01">
+    <text x="0" y="52" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#0f4b3c" text-anchor="middle" letter-spacing="-0.02">
       redoc-express
     </text>
 
@@ -87,18 +88,10 @@
     <circle cx="-194" cy="16" r="3.5" fill="#10b981"/>
 
     <!-- Code -->
-    <text x="-225" y="60" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500">
-      app.get('/docs', redoc({
-    </text>
-    <text x="-215" y="78" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500">
-      title: 'API Documentation',
-    </text>
-    <text x="-215" y="96" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500">
-      specUrl: '/api/openapi.json'
-    </text>
-    <text x="-225" y="114" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500">
-      }));
-    </text>
+    <text x="-225" y="60" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">app.get('/docs', redoc({</text>
+    <text x="-215" y="78" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">  title: 'API Documentation',</text>
+    <text x="-215" y="96" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">  specUrl: '/api/openapi.json'</text>
+    <text x="-225" y="114" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">}));</text>
   </g>
 
   <!-- GitHub URL -->
