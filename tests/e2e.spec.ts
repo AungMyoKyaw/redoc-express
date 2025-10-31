@@ -526,5 +526,358 @@ describe('End-to-End: Real-world usage scenario', () => {
       const response = await request(app).get('/docs').expect(200);
       expect(response.text).toContain('API Docs');
     });
+
+    test('should handle concurrent requests to same documentation endpoint', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const promises = [
+        request(app).get('/docs'),
+        request(app).get('/docs'),
+        request(app).get('/docs')
+      ];
+
+      const responses = await Promise.all(promises);
+
+      responses.forEach((response) => {
+        expect(response.status).toBe(200);
+        expect(response.text).toContain('API Docs');
+      });
+    });
+
+    test('should handle rapid successive requests', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      for (let i = 0; i < 10; i++) {
+        const response = await request(app).get('/docs');
+        expect(response.status).toBe(200);
+      }
+    });
+
+    test('should handle documentation with different content types', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const response = await request(app).get('/docs');
+
+      expect(response.get('Content-Type')).toMatch(/html/);
+    });
+
+    test('should handle request with various accept headers', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const response = await request(app)
+        .get('/docs')
+        .set(
+          'Accept',
+          'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+        );
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain('API Docs');
+    });
+
+    test('should handle documentation endpoint with trailing slash', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      app.get(
+        '/docs/',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const response1 = await request(app).get('/docs').expect(200);
+      const response2 = await request(app).get('/docs/').expect(200);
+
+      expect(response1.text).toContain('API Docs');
+      expect(response2.text).toContain('API Docs');
+    });
+
+    test('should handle very long spec URLs', async () => {
+      const longSpecUrl = '/docs/swagger.json?' + 'param=value&'.repeat(100);
+
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: longSpecUrl
+        })
+      );
+
+      const response = await request(app).get('/docs').expect(200);
+
+      expect(response.text).toContain(longSpecUrl);
+    });
+
+    test('should handle special characters in title', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API & <SDK> "Docs" with \'quotes\'',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const response = await request(app).get('/docs').expect(200);
+
+      expect(response.text).toContain('API & <SDK> "Docs" with \'quotes\'');
+    });
+
+    test('should handle documentation without CSP nonce', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const response = await request(app).get('/docs').expect(200);
+
+      expect(response.text).toContain("nonce=''");
+    });
+
+    test('should preserve all redoc styling options', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'Styled API Docs',
+          specUrl: '/docs/swagger.json',
+          redocOptions: {
+            theme: {
+              colors: {
+                primary: { main: '#FF6B6B' },
+                secondary: { main: '#4ECDC4' }
+              }
+            }
+          }
+        })
+      );
+
+      const response = await request(app).get('/docs').expect(200);
+
+      expect(response.text).toContain('#FF6B6B');
+      expect(response.text).toContain('#4ECDC4');
+    });
+
+    test('should handle multiple documentation versions simultaneously', async () => {
+      const v1Spec = {
+        ...swaggerSpec,
+        info: { ...swaggerSpec.info, version: '1.0.0' }
+      };
+      const v2Spec = {
+        ...swaggerSpec,
+        info: { ...swaggerSpec.info, version: '2.0.0' }
+      };
+      const v3Spec = {
+        ...swaggerSpec,
+        info: { ...swaggerSpec.info, version: '3.0.0' }
+      };
+
+      app.get('/docs/v1/swagger.json', (req, res) => res.json(v1Spec));
+      app.get('/docs/v2/swagger.json', (req, res) => res.json(v2Spec));
+      app.get('/docs/v3/swagger.json', (req, res) => res.json(v3Spec));
+
+      app.get(
+        '/docs/v1',
+        redocExpressMiddleware({
+          title: 'API v1',
+          specUrl: '/docs/v1/swagger.json'
+        })
+      );
+      app.get(
+        '/docs/v2',
+        redocExpressMiddleware({
+          title: 'API v2',
+          specUrl: '/docs/v2/swagger.json'
+        })
+      );
+      app.get(
+        '/docs/v3',
+        redocExpressMiddleware({
+          title: 'API v3',
+          specUrl: '/docs/v3/swagger.json'
+        })
+      );
+
+      const v1Response = await request(app).get('/docs/v1').expect(200);
+      const v2Response = await request(app).get('/docs/v2').expect(200);
+      const v3Response = await request(app).get('/docs/v3').expect(200);
+
+      expect(v1Response.text).toContain('API v1');
+      expect(v2Response.text).toContain('API v2');
+      expect(v3Response.text).toContain('API v3');
+    });
+
+    test('should respond with 200 status', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const response = await request(app).get('/docs');
+
+      expect(response.status).toBe(200);
+    });
+
+    test('should include proper HTML content', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json'
+        })
+      );
+
+      const response = await request(app).get('/docs');
+
+      expect(response.text).toMatch(/<!DOCTYPE html>/);
+      expect(response.text).toMatch(/<html[\s>]/);
+      expect(response.text).toMatch(/<\/html>/);
+    });
+
+    test('should work with absolute external spec URL', async () => {
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'External API Docs',
+          specUrl: 'https://petstore.swagger.io/v2/swagger.json'
+        })
+      );
+
+      const response = await request(app).get('/docs').expect(200);
+
+      expect(response.text).toContain(
+        'https://petstore.swagger.io/v2/swagger.json'
+      );
+    });
+
+    test('should handle documentation with boolean redocOptions', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      app.get(
+        '/docs',
+        redocExpressMiddleware({
+          title: 'API Docs',
+          specUrl: '/docs/swagger.json',
+          redocOptions: {
+            hideDownloadButton: true,
+            tryItOutEnabled: false,
+            disableSearch: true
+          }
+        })
+      );
+
+      const response = await request(app).get('/docs').expect(200);
+
+      expect(response.text).toContain('hideDownloadButton');
+      expect(response.text).toContain('true');
+      expect(response.text).toContain('tryItOutEnabled');
+      expect(response.text).toContain('false');
+    });
+
+    test('should handle middleware stacking with different configurations', async () => {
+      app.get('/docs/swagger.json', (req, res) => {
+        res.json(swaggerSpec);
+      });
+
+      const middleware1 = redocExpressMiddleware({
+        title: 'Config 1',
+        specUrl: '/docs/swagger.json'
+      });
+
+      const middleware2 = redocExpressMiddleware({
+        title: 'Config 2',
+        specUrl: '/docs/swagger.json'
+      });
+
+      app.get('/docs1', middleware1);
+      app.get('/docs2', middleware2);
+
+      const response1 = await request(app).get('/docs1').expect(200);
+      const response2 = await request(app).get('/docs2').expect(200);
+
+      expect(response1.text).toContain('Config 1');
+      expect(response2.text).toContain('Config 2');
+    });
   });
 });

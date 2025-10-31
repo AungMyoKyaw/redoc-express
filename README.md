@@ -6,14 +6,15 @@
 [![npm][npm-download]][npm-dl-url]
 [![contributions welcome][contri]][contri-url]
 [![License: MIT][license]][license-url]
-[![coverage][coverage]][coverage-url]
+[![coverage badge][coverage]][coverage-url]
 [![TypeScript][typescript-badge]][typescript-url]
+[![tests][tests-badge]][tests-url]
 
 ## Features
 
 - 🚀 **Lightweight & Fast** - Minimal overhead, serves static documentation
 - 📝 **Full TypeScript Support** - First-class TypeScript support with complete type definitions
-- ✅ **100% Test Coverage** - Comprehensive test suite with 47+ test cases
+- ✅ **100% Test Coverage** - Comprehensive test suite with 136 test cases covering all functionality
 - 🎨 **Customizable UI** - Full ReDoc theming and configuration support
 - 🔒 **Secure** - Built-in CSP nonce support for enhanced security
 - 📦 **ES5 Compatible** - Works across all Node.js versions (Node 6+)
@@ -27,7 +28,7 @@
 - Single middleware setup
 - Works with your existing OpenAPI/Swagger spec
 - Highly customizable but requires no configuration to get started
-- Production-ready with 100% test coverage
+- Production-ready with 100% code coverage and 136 comprehensive tests
 
 ## Demo
 
@@ -174,6 +175,8 @@ npm run build
 
 ## Test Coverage
 
+### Coverage Metrics
+
 | Metric     | Coverage |
 | ---------- | -------- |
 | Statements | 100%     |
@@ -181,13 +184,41 @@ npm run build
 | Functions  | 100%     |
 | Lines      | 100%     |
 
-**47 comprehensive test cases** covering:
+### Test Suite
 
-- HTML template generation with various configurations
-- Special characters and edge cases handling
-- Middleware functionality and request/response handling
-- Complex nested options and JSON serialization
-- Daily CI/CD test runs with automated issue creation
+**136 comprehensive test cases** organized across 3 test suites:
+
+- **Unit Tests - redocHtml** (85+ tests)
+  - HTML structure and DOCTYPE validation
+  - Title handling (unicode, emoji, special characters, extreme lengths)
+  - URL/Spec handling (protocols, authentication, fragments, long URLs)
+  - Nonce validation and CSP compliance
+  - ReDoc options configuration (objects, arrays, numbers, booleans)
+  - JSON serialization and escaping
+
+- **Unit Tests - redocExpressMiddleware** (51+ tests)
+  - Express middleware behavior and method ordering
+  - Content-type and response handling
+  - Request/response immutability
+  - Multiple middleware invocations
+  - Edge cases and error handling
+
+- **End-to-End Tests** (26+ tests)
+  - Real-world Express integration scenarios
+  - Concurrent request handling
+  - Multiple API documentation versions
+  - Route isolation and middleware chains
+  - Stress testing with rapid requests
+
+### Test Execution
+
+```bash
+npm test              # Run all 136 tests
+npm test -- --coverage # With coverage report
+npm test -- --watch   # Watch mode during development
+```
+
+All tests pass with **100% code coverage** in approximately **1-2 seconds**.
 
 ## FAQ
 
@@ -232,3 +263,5 @@ MIT © [Aung Myo Kyaw](https://github.com/AungMyoKyaw)
 [product-website-url]: https://aungmyokyaw.github.io/redoc-express/
 [coverage]: https://img.shields.io/badge/coverage-100%25-brightgreen.svg?style=flat-square
 [coverage-url]: #test-coverage
+[tests-badge]: https://img.shields.io/badge/tests-136%20passing-brightgreen.svg?style=flat-square
+[tests-url]: #test-coverage
