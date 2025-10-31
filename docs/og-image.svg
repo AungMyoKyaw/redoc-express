@@ -3,16 +3,26 @@
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#f0fdf9;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ccf5e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dcfce7;stop-opacity:1" />
     </linearGradient>
     <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2ec49b;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1dae8a;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16a34a;stop-opacity:1" />
     </linearGradient>
     <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.06"/>
+      <feComposite in2="offsetblur" operator="in" result="offsetblur"/>
+      <feMerge>
+        <feMergeNode in="offsetblur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow-strong" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
       <feOffset dx="0" dy="4" result="offsetblur"/>
-      <feFlood flood-color="#000000" flood-opacity="0.08"/>
+      <feFlood flood-color="#000000" flood-opacity="0.1"/>
       <feComposite in2="offsetblur" operator="in" result="offsetblur"/>
       <feMerge>
         <feMergeNode in="offsetblur"/>
@@ -24,78 +34,89 @@
   <!-- Background -->
   <rect width="1200" height="630" fill="url(#bgGrad)"/>
 
-  <!-- Subtle background pattern -->
-  <g opacity="0.02">
-    <circle cx="200" cy="150" r="120" fill="#6EC5AB"/>
-    <circle cx="1000" cy="480" r="140" fill="#6EC5AB"/>
+  <!-- Subtle background pattern with better visibility -->
+  <g opacity="0.03">
+    <circle cx="180" cy="130" r="100" fill="#22c55e"/>
+    <circle cx="1020" cy="500" r="120" fill="#22c55e"/>
+    <circle cx="900" cy="100" r="80" fill="#16a34a"/>
   </g>
 
   <!-- Main content container -->
-  <g transform="translate(600, 180)">
-    <!-- Logo -->
-    <g transform="translate(-40, 0)" filter="url(#shadow)">
-      <rect x="0" y="0" width="76" height="76" rx="18" fill="url(#logoGrad)"/>
-      <text x="38" y="48" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle" role="img">R</text>
+  <g transform="translate(600, 170)">
+    <!-- Logo with enhanced shadow -->
+    <g transform="translate(-40, 0)" filter="url(#shadow-strong)">
+      <rect x="0" y="0" width="80" height="80" rx="20" fill="url(#logoGrad)"/>
+      <text x="40" y="40" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="central">R</text>
     </g>
 
-    <!-- Title -->
-    <text x="0" y="52" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#0f4b3c" text-anchor="middle" letter-spacing="-0.02">
+    <!-- Title with better spacing and weight -->
+    <text x="0" y="-30" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#064e3b" text-anchor="middle" letter-spacing="-0.01">
       redoc-express
     </text>
 
-    <!-- Subtitle -->
-    <text x="0" y="88" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600" fill="#107158" text-anchor="middle">
+    <!-- Subtitle with improved contrast and spacing -->
+    <text x="0" y="110" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="500" fill="#047857" text-anchor="middle">
       Beautiful API documentation for Express
     </text>
 
-    <!-- Features row -->
-    <g transform="translate(-248, 118)">
-      <!-- Zero Config -->
+    <!-- Features row with better spacing and visual hierarchy -->
+    <g transform="translate(-255, 130)">
+      <!-- Zero Config with enhanced styling -->
       <g>
-        <rect x="0" y="0" width="150" height="38" rx="19" fill="#ffffff" stroke="#6EC5AB" stroke-width="2" filter="url(#shadow)"/>
-        <text x="75" y="24" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#107158" text-anchor="middle" dominant-baseline="middle">
+        <rect x="0" y="0" width="160" height="42" rx="21" fill="#ffffff" stroke="#22c55e" stroke-width="2.5" filter="url(#shadow)"/>
+        <text x="80" y="21" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#065f46" text-anchor="middle" dominant-baseline="central">
           ⚡ Zero Config
         </text>
       </g>
 
-      <!-- TypeScript -->
-      <g transform="translate(165, 0)">
-        <rect x="0" y="0" width="150" height="38" rx="19" fill="#ffffff" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
-        <text x="75" y="24" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e40af" text-anchor="middle" dominant-baseline="middle">
+      <!-- TypeScript with improved colors -->
+      <g transform="translate(175, 0)">
+        <rect x="0" y="0" width="160" height="42" rx="21" fill="#ffffff" stroke="#3b82f6" stroke-width="2.5" filter="url(#shadow)"/>
+        <text x="80" y="21" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1e3a8a" text-anchor="middle" dominant-baseline="central">
           📘 TypeScript
         </text>
       </g>
 
-      <!-- 100% Coverage -->
-      <g transform="translate(330, 0)">
-        <rect x="0" y="0" width="150" height="38" rx="19" fill="#ffffff" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
-        <text x="75" y="24" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#059669" text-anchor="middle" dominant-baseline="middle">
+      <!-- 100% Coverage with better contrast -->
+      <g transform="translate(350, 0)">
+        <rect x="0" y="0" width="160" height="42" rx="21" fill="#ffffff" stroke="#10b981" stroke-width="2.5" filter="url(#shadow)"/>
+        <text x="80" y="21" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#064e3b" text-anchor="middle" dominant-baseline="central">
           ✅ 100% Coverage
         </text>
       </g>
     </g>
   </g>
 
-  <!-- Code example -->
-  <g transform="translate(600, 400)">
-    <rect x="-240" y="0" width="480" height="110" rx="10" fill="#ffffff" filter="url(#shadow)"/>
-    <rect x="-240" y="0" width="480" height="32" rx="10" fill="#f8fafc"/>
-    <rect x="-240" y="30" width="480" height="1" fill="#e2e8f0"/>
+  <!-- Code example with enhanced styling -->
+  <g transform="translate(600, 380)">
+    <rect x="-250" y="0" width="500" height="140" rx="12" fill="#ffffff" filter="url(#shadow-strong)"/>
+    <rect x="-250" y="0" width="500" height="36" rx="12" fill="#f8fafc"/>
+    <rect x="-250" y="34" width="500" height="1" fill="#e2e8f0"/>
 
-    <!-- Window controls -->
-    <circle cx="-220" cy="16" r="3.5" fill="#ef4444"/>
-    <circle cx="-207" cy="16" r="3.5" fill="#f59e0b"/>
-    <circle cx="-194" cy="16" r="3.5" fill="#10b981"/>
+    <!-- Window controls with better spacing -->
+    <circle cx="-225" cy="18" r="4" fill="#ef4444"/>
+    <circle cx="-210" cy="18" r="4" fill="#f59e0b"/>
+    <circle cx="-195" cy="18" r="4" fill="#10b981"/>
 
-    <!-- Code -->
-    <text x="-225" y="60" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">app.get('/docs', redoc({</text>
-    <text x="-215" y="78" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">  title: 'API Documentation',</text>
-    <text x="-215" y="96" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">  specUrl: '/api/openapi.json'</text>
-    <text x="-225" y="114" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="14" fill="#0f172a" font-weight="500" xml:space="preserve">}));</text>
+    <!-- Code with syntax highlighting colors -->
+    <text x="-235" y="64" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#0f172a" font-weight="500" xml:space="preserve">app.get('/docs', redoc({</text>
+    <text x="-225" y="84" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#0f172a" font-weight="500" xml:space="preserve">  </text>
+    <text x="-205" y="84" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#7c3aed" font-weight="500" xml:space="preserve">title</text>
+    <text x="-165" y="84" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#0f172a" font-weight="500" xml:space="preserve">: </text>
+    <text x="-150" y="84" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#059669" font-weight="500" xml:space="preserve">'API Documentation'</text>
+    <text x="-25" y="84" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#0f172a" font-weight="500" xml:space="preserve">,</text>
+    <text x="-225" y="104" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#0f172a" font-weight="500" xml:space="preserve">  </text>
+    <text x="-205" y="104" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#7c3aed" font-weight="500" xml:space="preserve">specUrl</text>
+    <text x="-155" y="104" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#0f172a" font-weight="500" xml:space="preserve">: </text>
+    <text x="-140" y="104" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#059669" font-weight="500" xml:space="preserve">'/api/openapi.json'</text>
+    <text x="-235" y="124" font-family="'SF Mono', 'Monaco', 'Inconsolata', monospace" font-size="15" fill="#0f172a" font-weight="500" xml:space="preserve">}));</text>
   </g>
 
-  <!-- GitHub URL -->
-  <text x="600" y="560" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="500" fill="#6EC5AB" text-anchor="middle">
-    📦 github.com/AungMyoKyaw/redoc-express
-  </text>
+  <!-- GitHub URL with enhanced visibility -->
+  <g transform="translate(600, 540)">
+    <rect x="-180" y="-8" width="360" height="32" rx="16" fill="#ffffff" fill-opacity="0.8" filter="url(#shadow)"/>
+    <text x="0" y="8" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#15803d" text-anchor="middle" dominant-baseline="central">
+      📦 github.com/AungMyoKyaw/redoc-express
+    </text>
+  </g>
 </svg>
