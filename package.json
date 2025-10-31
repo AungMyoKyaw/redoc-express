@@ -1,6 +1,6 @@
 {
   "name": "redoc-express",
-  "version": "2.1.3",
+  "version": "2.1.3-beta.0",
   "description": "Lightweight Express middleware for serving interactive ReDoc API documentation from OpenAPI/Swagger specs. TypeScript support, 100% test coverage, ES5 compatible.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
