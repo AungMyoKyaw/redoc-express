@@ -5,6 +5,9 @@ module.exports = {
   clearMocks: true,
   coverageDirectory: 'coverage',
   testEnvironment: 'node',
+  testEnvironmentOptions: {
+    localStoragePath: './.jest-localstorage'
+  },
   testMatch: ['**/tests/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
