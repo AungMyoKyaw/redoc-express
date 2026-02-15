@@ -90,3 +90,12 @@ Temporary Items
 # dist dir
 dist/
 
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Jest local storage
+.jest-localstorage
+

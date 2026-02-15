@@ -237,7 +237,7 @@ describe('redocHtml', () => {
       title: 'API',
       specUrl: 'http://example.com/spec.json',
       redocOptions: {
-        theme: null,
+        theme: null as unknown as undefined,
         title: null
       }
     });
