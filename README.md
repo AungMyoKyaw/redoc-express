@@ -9,6 +9,7 @@
 [![coverage badge][coverage]][coverage-url]
 [![TypeScript][typescript-badge]][typescript-url]
 [![tests][tests-badge]][tests-url]
+[![Node.js Version][node-badge]][node-url]
 
 ## Features
 
@@ -243,6 +244,45 @@ A: Node 6+ (ES5 compiled output). Development requires Node 18.14+.
 - [OpenAPI Specification](https://spec.openapis.org/)
 - [Report Issues](https://github.com/AungMyoKyaw/redoc-express/issues)
 
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Run tests to ensure they pass (`npm test`)
+4. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+### Development Setup
+
+```shell
+# Clone the repository
+git clone https://github.com/AungMyoKyaw/redoc-express.git
+cd redoc-express
+
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Run linting
+npm run lint
+
+# Build the project
+npm run build
+```
+
+### Code Style
+
+This project uses:
+- [Prettier](https://prettier.io/) for code formatting
+- [ESLint](https://eslint.org/) for code quality
+
+Please ensure your code follows the existing style by running `npm run lint:fix` before committing.
+
 ## License
 
 MIT © [Aung Myo Kyaw](https://github.com/AungMyoKyaw)
@@ -265,3 +305,5 @@ MIT © [Aung Myo Kyaw](https://github.com/AungMyoKyaw)
 [coverage-url]: #test-coverage
 [tests-badge]: https://img.shields.io/badge/tests-136%20passing-brightgreen.svg?style=flat-square
 [tests-url]: #test-coverage
+[node-badge]: https://img.shields.io/badge/Node.js-6%2B-green.svg?style=flat-square
+[node-url]: https://nodejs.org/
